@@ -27,11 +27,11 @@ public class Rocket : MonoBehaviour {
 
         if (Input.GetKey(KeyCode.A))
         {
-            print("Rotating Left");
+            transform.Rotate(Vector3.forward); // Rotação no sentido anti-horário
         }
         else if (Input.GetKey(KeyCode.D))
         {
-            print("Rotating Right");
+            transform.Rotate(-Vector3.forward); // Rotação no sentido horário (Atentar ao uso do sinal negativo).
         }
     }
 }
