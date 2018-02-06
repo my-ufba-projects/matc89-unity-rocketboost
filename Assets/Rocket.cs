@@ -17,15 +17,16 @@ public class Rocket : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        ProcessInput();
+        Thurst();
+        Rotate();
 	}
 
-    private void ProcessInput()
+    private void Thurst()
     {
         if (Input.GetKey(KeyCode.Space)) // Ao pressionar espaço
         {
             rigidBody.AddRelativeForce(Vector3.up);
-            if(!myAudio.isPlaying) // Se áudio não está tocando, executar trilha
+            if (!myAudio.isPlaying) // Se áudio não está tocando, executar trilha
                 myAudio.Play();
         }
         else
@@ -33,6 +34,11 @@ public class Rocket : MonoBehaviour {
             if (myAudio.isPlaying) // Se áudio está tocando, interromper trilha
                 myAudio.Stop();
         }
+    }
+
+    private void Rotate()
+    {
+        rigidBody.freezeRotation = true;
 
         if (Input.GetKey(KeyCode.A))
         {
@@ -42,5 +48,7 @@ public class Rocket : MonoBehaviour {
         {
             transform.Rotate(-Vector3.forward); // Rotação no sentido horário (Atentar ao uso do sinal negativo).
         }
+
+        rigidBody.freezeRotation = false;
     }
 }
