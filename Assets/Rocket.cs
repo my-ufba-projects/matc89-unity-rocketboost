@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Rocket : MonoBehaviour {
 
+    [SerializeField] float mainThrust = 1000f; // SerializeField permite que seja editado no Inspector, mas não fora do script, enquanto public são os dois.
+    [SerializeField] float rotThrust = 100f;
+    
     Rigidbody rigidBody;
     AudioSource myAudio;
 
@@ -25,7 +28,10 @@ public class Rocket : MonoBehaviour {
     {
         if (Input.GetKey(KeyCode.Space)) // Ao pressionar espaço
         {
-            rigidBody.AddRelativeForce(Vector3.up);
+            float thurstByFrame = mainThrust * Time.deltaTime; // Time.deltaTime é usado para padronizar a velocidade de acordo com o Frame de cada um
+
+            rigidBody.AddRelativeForce(Vector3.up * thurstByFrame);
+
             if (!myAudio.isPlaying) // Se áudio não está tocando, executar trilha
                 myAudio.Play();
         }
@@ -40,13 +46,15 @@ public class Rocket : MonoBehaviour {
     {
         rigidBody.freezeRotation = true;
 
+        float rotationByFrame = rotThrust * Time.deltaTime; // Time.deltaTime é usado para padronizar a velocidade de acordo com o Frame de cada um
+
         if (Input.GetKey(KeyCode.A))
         {
-            transform.Rotate(Vector3.forward); // Rotação no sentido anti-horário
+            transform.Rotate(Vector3.forward * rotationByFrame); // Rotação no sentido anti-horário
         }
         else if (Input.GetKey(KeyCode.D))
         {
-            transform.Rotate(-Vector3.forward); // Rotação no sentido horário (Atentar ao uso do sinal negativo).
+            transform.Rotate(-Vector3.forward * rotationByFrame); // Rotação no sentido horário (Atentar ao uso do sinal negativo).
         }
 
         rigidBody.freezeRotation = false;
