@@ -24,6 +24,19 @@ public class Rocket : MonoBehaviour {
         Rotate();
 	}
 
+    void OnCollisionEnter(Collision collision)
+    {
+        switch(collision.gameObject.tag)
+        {
+            case "Friendly":
+                print("OK");
+                break;
+            default:
+                print("Já elvis");
+                break;
+        }
+    }
+
     private void Thurst()
     {
         if (Input.GetKey(KeyCode.Space)) // Ao pressionar espaço
@@ -44,7 +57,7 @@ public class Rocket : MonoBehaviour {
 
     private void Rotate()
     {
-        rigidBody.freezeRotation = true;
+        rigidBody.freezeRotation = true; // Desativando rotação através da física, deixando manual (usuário)
 
         float rotationByFrame = rotThrust * Time.deltaTime; // Time.deltaTime é usado para padronizar a velocidade de acordo com o Frame de cada um
 
@@ -57,6 +70,6 @@ public class Rocket : MonoBehaviour {
             transform.Rotate(-Vector3.forward * rotationByFrame); // Rotação no sentido horário (Atentar ao uso do sinal negativo).
         }
 
-        rigidBody.freezeRotation = false;
+        rigidBody.freezeRotation = false; // Ativando rotação através da física, deixando automática (Engine)
     }
 }
