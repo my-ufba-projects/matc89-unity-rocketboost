@@ -7,7 +7,10 @@ public class Rocket : MonoBehaviour {
 
     [SerializeField] float mainThrust = 1000f; // SerializeField permite que seja editado no Inspector, mas não fora do script, enquanto public são os dois.
     [SerializeField] float rotThrust = 100f;
-    
+    [SerializeField] AudioClip mainEngine;
+    [SerializeField] AudioClip deathSound;
+    [SerializeField] AudioClip winSound;
+
     Rigidbody rigidBody;
     AudioSource myAudio;
 
@@ -26,8 +29,8 @@ public class Rocket : MonoBehaviour {
     {
         if (state == State.Alive)
         {
-            Thurst();
-            Rotate();
+            Thursting();
+            Rotating();
         }
 	}
 
@@ -42,16 +45,38 @@ public class Rocket : MonoBehaviour {
                 print("OK");
                 break;
             case "Finish":
-                state = State.Transcending;
-                Invoke("LoadNextScene", 1f);
+                StartWinSequence();
                 break;
             default:
-                state = State.Dying;
-                if (myAudio.isPlaying)
-                    myAudio.Stop();
-                Invoke("LoadFirstLevel", 1f);
+                StartDeathSequence();
                 break;
         }
+    }
+
+    private void StartWinSequence()
+    {
+        state = State.Transcending;
+        if (myAudio.isPlaying)
+        {
+            myAudio.Stop();
+            myAudio.PlayOneShot(winSound);
+        }
+        else
+            myAudio.PlayOneShot(winSound);
+        Invoke("LoadNextScene", 1.5f);
+    }
+
+    private void StartDeathSequence()
+    {
+        state = State.Dying;
+        if (myAudio.isPlaying)
+        {
+            myAudio.Stop();
+            myAudio.PlayOneShot(deathSound);
+        }
+        else
+            myAudio.PlayOneShot(deathSound);
+        Invoke("LoadFirstLevel", 2f);
     }
 
     private void LoadNextScene()
@@ -64,16 +89,11 @@ public class Rocket : MonoBehaviour {
         SceneManager.LoadScene(0);
     }
 
-    private void Thurst()
+    private void Thursting()
     {
         if (Input.GetKey(KeyCode.Space)) // Ao pressionar espaço
         {
-            float thurstByFrame = mainThrust * Time.deltaTime; // Time.deltaTime é usado para padronizar a velocidade de acordo com o Frame de cada um
-
-            rigidBody.AddRelativeForce(Vector3.up * thurstByFrame);
-
-            if (!myAudio.isPlaying) // Se áudio não está tocando, executar trilha
-                myAudio.Play();
+            ApplyThrust();
         }
         else
         {
@@ -82,7 +102,17 @@ public class Rocket : MonoBehaviour {
         }
     }
 
-    private void Rotate()
+    private void ApplyThrust()
+    {
+        float thurstByFrame = mainThrust * Time.deltaTime; // Time.deltaTime é usado para padronizar a velocidade de acordo com o Frame de cada um
+
+        rigidBody.AddRelativeForce(Vector3.up * thurstByFrame);
+
+        if (!myAudio.isPlaying) // Se áudio não está tocando, executar trilha
+            myAudio.PlayOneShot(mainEngine);
+    }
+
+    private void Rotating()
     {
         rigidBody.freezeRotation = true; // Desativando rotação através da física, deixando manual (usuário)
 
