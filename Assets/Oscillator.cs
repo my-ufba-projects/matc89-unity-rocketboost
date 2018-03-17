@@ -19,15 +19,16 @@ public class Oscillator : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        //todo: disallow period = 0 (can't divide by zero)
+
+        if (period <= Mathf.Epsilon)
+            return; // Disallowing period being 0. Itsn't right to compare floats with ==, that's why we use mathf.epsilon (smallest float)
+
         float cycles = Time.time / period;
 
         const float tau = Mathf.PI * 2f; // around 6.28
         float rawSinWave = Mathf.Sin(tau * cycles);
 
         movementFactor = rawSinWave/2f + 0.5f;
-
-        print(movementFactor);
 
         Vector3 offset = movementVector * movementFactor;
         transform.position = startingPos + offset;

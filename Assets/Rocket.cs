@@ -7,9 +7,12 @@ public class Rocket : MonoBehaviour {
 
     [SerializeField] float mainThrust = 1000f; // SerializeField permite que seja editado no Inspector, mas não fora do script, enquanto public são os dois.
     [SerializeField] float rotThrust = 100f;
+    [SerializeField] float levelLoadDelay = 2f;
+
     [SerializeField] AudioClip mainEngine;
     [SerializeField] AudioClip deathSound;
     [SerializeField] AudioClip winSound;
+
     [SerializeField] ParticleSystem mainEngineParticle;
     [SerializeField] ParticleSystem deathParticle;
     [SerializeField] ParticleSystem winParticle;
@@ -68,7 +71,7 @@ public class Rocket : MonoBehaviour {
             myAudio.PlayOneShot(winSound);
 
         winParticle.Play();
-        Invoke("LoadNextScene", 1.5f);
+        Invoke("LoadNextScene", levelLoadDelay);
     }
 
     private void StartDeathSequence()
@@ -83,7 +86,7 @@ public class Rocket : MonoBehaviour {
             myAudio.PlayOneShot(deathSound);
         mainEngineParticle.Stop();
         deathParticle.Play();
-        Invoke("LoadFirstLevel", 2f);
+        Invoke("LoadFirstLevel", levelLoadDelay);
     }
 
     private void LoadNextScene()
