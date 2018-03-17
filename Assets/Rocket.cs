@@ -10,6 +10,9 @@ public class Rocket : MonoBehaviour {
     [SerializeField] AudioClip mainEngine;
     [SerializeField] AudioClip deathSound;
     [SerializeField] AudioClip winSound;
+    [SerializeField] ParticleSystem mainEngineParticle;
+    [SerializeField] ParticleSystem deathParticle;
+    [SerializeField] ParticleSystem winParticle;
 
     Rigidbody rigidBody;
     AudioSource myAudio;
@@ -63,6 +66,8 @@ public class Rocket : MonoBehaviour {
         }
         else
             myAudio.PlayOneShot(winSound);
+
+        winParticle.Play();
         Invoke("LoadNextScene", 1.5f);
     }
 
@@ -76,6 +81,8 @@ public class Rocket : MonoBehaviour {
         }
         else
             myAudio.PlayOneShot(deathSound);
+        mainEngineParticle.Stop();
+        deathParticle.Play();
         Invoke("LoadFirstLevel", 2f);
     }
 
@@ -99,6 +106,7 @@ public class Rocket : MonoBehaviour {
         {
             if (myAudio.isPlaying) // Se áudio está tocando, interromper trilha
                 myAudio.Stop();
+            mainEngineParticle.Stop();
         }
     }
 
@@ -110,6 +118,8 @@ public class Rocket : MonoBehaviour {
 
         if (!myAudio.isPlaying) // Se áudio não está tocando, executar trilha
             myAudio.PlayOneShot(mainEngine);
+
+        mainEngineParticle.Play();
     }
 
     private void Rotating()
