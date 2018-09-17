@@ -20,7 +20,7 @@ public class Rocket : MonoBehaviour {
     Rigidbody rigidBody;
     AudioSource myAudio;
 
-    enum State { Alive, Dying, Transcending }
+    enum State { Alive, Dying, Transcending };
     State state;
 
 	// Use this for initialization
@@ -35,8 +35,8 @@ public class Rocket : MonoBehaviour {
     {
         if (state == State.Alive)
         {
-            Thursting();
-            Rotating();
+            ThrustWhenInput();
+            RotateWhenInput();
         }
 	}
 
@@ -62,28 +62,34 @@ public class Rocket : MonoBehaviour {
     private void StartWinSequence()
     {
         state = State.Transcending;
+        runStateAudio(state);
+        winParticle.Play();
+        Invoke("LoadNextScene", levelLoadDelay);
+    }
+
+    private void runStateAudio(State state)
+    {
         if (myAudio.isPlaying)
         {
             myAudio.Stop();
-            myAudio.PlayOneShot(winSound);
+            if (state == State.Transcending)
+                myAudio.PlayOneShot(winSound);
+            else
+                myAudio.PlayOneShot(deathSound);
         }
         else
-            myAudio.PlayOneShot(winSound);
-
-        winParticle.Play();
-        Invoke("LoadNextScene", levelLoadDelay);
+        {
+            if (state == State.Transcending)
+                myAudio.PlayOneShot(winSound);
+            else
+                myAudio.PlayOneShot(deathSound);
+        }
     }
 
     private void StartDeathSequence()
     {
         state = State.Dying;
-        if (myAudio.isPlaying)
-        {
-            myAudio.Stop();
-            myAudio.PlayOneShot(deathSound);
-        }
-        else
-            myAudio.PlayOneShot(deathSound);
+        runStateAudio(state);
         mainEngineParticle.Stop();
         deathParticle.Play();
         Invoke("LoadFirstLevel", levelLoadDelay);
@@ -99,12 +105,11 @@ public class Rocket : MonoBehaviour {
         SceneManager.LoadScene(0);
     }
 
-    private void Thursting()
+    private void ThrustWhenInput()
     {
         if (Input.GetKey(KeyCode.Space)) // Ao pressionar espaço
-        {
             ApplyThrust();
-        }
+        
         else
         {
             if (myAudio.isPlaying) // Se áudio está tocando, interromper trilha
@@ -125,20 +130,17 @@ public class Rocket : MonoBehaviour {
         mainEngineParticle.Play();
     }
 
-    private void Rotating()
+    private void RotateWhenInput()
     {
         rigidBody.freezeRotation = true; // Desativando rotação através da física, deixando manual (usuário)
 
         float rotationByFrame = rotThrust * Time.deltaTime; // Time.deltaTime é usado para padronizar a velocidade de acordo com o Frame de cada um
 
         if (Input.GetKey(KeyCode.A))
-        {
-            transform.Rotate(Vector3.forward * rotationByFrame); // Rotação no sentido anti-horário
-        }
+            transform.Rotate(Vector3.forward * rotationByFrame); // Rotação no sentido anti-horário 
         else if (Input.GetKey(KeyCode.D))
-        {
             transform.Rotate(-Vector3.forward * rotationByFrame); // Rotação no sentido horário (Atentar ao uso do sinal negativo).
-        }
+        
 
         rigidBody.freezeRotation = false; // Ativando rotação através da física, deixando automática (Engine)
     }
