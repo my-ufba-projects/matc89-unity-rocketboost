@@ -17,8 +17,11 @@ public class Rocket : MonoBehaviour {
     [SerializeField] ParticleSystem deathParticle;
     [SerializeField] ParticleSystem winParticle;
 
+    bool collision = true; 
+
     Rigidbody rigidBody;
     AudioSource myAudio;
+    BoxCollider myBoxCollider;
 
     enum State { Alive, Dying, Transcending };
     State state;
@@ -28,17 +31,24 @@ public class Rocket : MonoBehaviour {
     {
         rigidBody = GetComponent<Rigidbody>();
         myAudio = GetComponent<AudioSource>();
-	}
+        myBoxCollider = GetComponent<BoxCollider>();
+    }
 	
 	// Update is called once per frame
 	void Update ()
     {
+        
         if (state == State.Alive)
         {
             ThrustWhenInput();
             RotateWhenInput();
         }
-	}
+
+        if(Debug.isDebugBuild)
+        {
+            ToggleDebugKeys();
+        }
+    }
 
     void OnCollisionEnter(Collision collision)
     {
@@ -48,7 +58,6 @@ public class Rocket : MonoBehaviour {
         switch (collision.gameObject.tag)
         {
             case "Friendly":
-                print("OK");
                 break;
             case "Finish":
                 StartWinSequence();
@@ -144,4 +153,25 @@ public class Rocket : MonoBehaviour {
 
         rigidBody.freezeRotation = false; // Ativando rotação através da física, deixando automática (Engine)
     }
+
+    private void ToggleDebugKeys()
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+            LoadNextScene();
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            if (collision)
+            {
+                collision = false;
+                myBoxCollider.enabled = false;
+            }
+            else
+            {
+                collision = true;
+                myBoxCollider.enabled = true;
+            }
+        }
+    }
+
 }
