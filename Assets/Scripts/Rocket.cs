@@ -8,6 +8,7 @@ public class Rocket : MonoBehaviour {
     [SerializeField] float mainThrust = 1000f; // SerializeField permite que seja editado no Inspector, mas não fora do script, enquanto public são os dois.
     [SerializeField] float rotThrust = 100f;
     [SerializeField] float levelLoadDelay = 2f;
+    [SerializeField] float rotateAmount = 6f;
 
     [SerializeField] AudioClip mainEngine;
     [SerializeField] AudioClip deathSound;
@@ -26,7 +27,7 @@ public class Rocket : MonoBehaviour {
     enum State { Alive, Dying, Transcending };
     State state;
 
-    float rotateAmount = 2;
+    
 
     // Use this for initialization
     void Start ()
@@ -199,7 +200,7 @@ public class Rocket : MonoBehaviour {
     float GetTiltValue()
     {
         float tiltMin = 0.05f;
-        float tiltMax = 0.2f;
+        //float tiltMax = 0.2f;
 
         // Work out magnitude of tilt
         float tilt = Mathf.Abs(Input.acceleration.x);
@@ -209,16 +210,16 @@ public class Rocket : MonoBehaviour {
         {
             return 0;
         }
-        float tiltScale = (tilt - tiltMin) / (tiltMax - tiltMin);
+        //float tiltScale = (tilt - tiltMin) / (tiltMax - tiltMin);
 
         // Change scale to be negative if accel was negative
         if (Input.acceleration.x < 0)
         {
-            return tiltScale;
+            return tilt;
         }
         else
         {
-            return -tiltScale;
+            return -tilt;
         }
 
     }
