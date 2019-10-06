@@ -26,8 +26,10 @@ public class Rocket : MonoBehaviour {
     enum State { Alive, Dying, Transcending };
     State state;
 
-	// Use this for initialization
-	void Start ()
+    float rotateAmount = 2;
+
+    // Use this for initialization
+    void Start ()
     {
         Screen.orientation = ScreenOrientation.LandscapeLeft; // Horizontalização da tela
         rigidBody = GetComponent<Rigidbody>();
@@ -117,7 +119,7 @@ public class Rocket : MonoBehaviour {
 
     private void ThrustWhenInput()
     {
-        if (Input.GetKey(KeyCode.Space)) // Ao pressionar espaço
+        /*if (Input.GetKey(KeyCode.Space)) // Ao pressionar espaço
         {
             ApplyThrust();
         }
@@ -126,7 +128,7 @@ public class Rocket : MonoBehaviour {
             if (myAudio.isPlaying) // Se áudio está tocando, interromper trilha
                 myAudio.Stop();
             mainEngineParticle.Stop();
-        }
+        }*/
 
         foreach(Touch touch in Input.touches)
         {
@@ -157,7 +159,7 @@ public class Rocket : MonoBehaviour {
 
     private void RotateWhenInput()
     {
-        //rigidBody.freezeRotation = true; // Desativando rotação através da física, deixando manual (usuário)
+        rigidBody.freezeRotation = true; // Desativando rotação através da física, deixando manual (usuário)
 
         float rotationByFrame = rotThrust * Time.deltaTime; // Time.deltaTime é usado para padronizar a velocidade de acordo com o Frame de cada um
 
@@ -167,9 +169,13 @@ public class Rocket : MonoBehaviour {
             transform.Rotate(-Vector3.forward * rotationByFrame); // Rotação no sentido horário (Atentar ao uso do sinal negativo).
         */
 
-        //transform.rotation = Input.gyro.attitude;
+        //transform.rotation = Input.gyro.attitude;        
 
-        //rigidBody.freezeRotation = false; // Ativando rotação através da física, deixando automática (Engine)
+        float tiltValue = GetTiltValue();
+        Vector3 oldAngles = this.transform.eulerAngles;
+        this.transform.eulerAngles = new Vector3(oldAngles.x, oldAngles.y, oldAngles.z + (tiltValue * rotateAmount));
+
+        rigidBody.freezeRotation = false; // Ativando rotação através da física, deixando automática (Engine)
     }
 
     private void ToggleDebugKeys()
@@ -190,6 +196,33 @@ public class Rocket : MonoBehaviour {
                 myBoxCollider.enabled = true;
             }
         }
+    }
+
+    float GetTiltValue()
+    {
+        float tiltMin = 0.05f;
+        float tiltMax = 0.2f;
+
+        // Work out magnitude of tilt
+        float tilt = Mathf.Abs(Input.acceleration.x);
+
+        // If not really tilted don't change anything
+        if (tilt < tiltMin)
+        {
+            return 0;
+        }
+        float tiltScale = (tilt - tiltMin) / (tiltMax - tiltMin);
+
+        // Change scale to be negative if accel was negative
+        if (Input.acceleration.x < 0)
+        {
+            return tiltScale;
+        }
+        else
+        {
+            return -tiltScale;
+        }
+
     }
 
 }
