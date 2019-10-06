@@ -29,6 +29,7 @@ public class Rocket : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
     {
+        Screen.orientation = ScreenOrientation.LandscapeLeft; // Horizontalização da tela
         rigidBody = GetComponent<Rigidbody>();
         myAudio = GetComponent<AudioSource>();
         myBoxCollider = GetComponent<BoxCollider>();
@@ -126,6 +127,20 @@ public class Rocket : MonoBehaviour {
                 myAudio.Stop();
             mainEngineParticle.Stop();
         }
+
+        foreach(Touch touch in Input.touches)
+        {
+            if(touch.phase == TouchPhase.Stationary)
+            {
+                ApplyThrust();
+            }
+            else if(touch.phase == TouchPhase.Ended)
+            {
+                if (myAudio.isPlaying) // Se áudio está tocando, interromper trilha
+                    myAudio.Stop();
+                mainEngineParticle.Stop();
+            }
+        }
     }
 
     private void ApplyThrust()
@@ -142,17 +157,19 @@ public class Rocket : MonoBehaviour {
 
     private void RotateWhenInput()
     {
-        rigidBody.freezeRotation = true; // Desativando rotação através da física, deixando manual (usuário)
+        //rigidBody.freezeRotation = true; // Desativando rotação através da física, deixando manual (usuário)
 
         float rotationByFrame = rotThrust * Time.deltaTime; // Time.deltaTime é usado para padronizar a velocidade de acordo com o Frame de cada um
 
-        if (Input.GetKey(KeyCode.A))
+        /*if (Input.GetKey(KeyCode.A))
             transform.Rotate(Vector3.forward * rotationByFrame); // Rotação no sentido anti-horário 
         else if (Input.GetKey(KeyCode.D))
             transform.Rotate(-Vector3.forward * rotationByFrame); // Rotação no sentido horário (Atentar ao uso do sinal negativo).
-        
+        */
 
-        rigidBody.freezeRotation = false; // Ativando rotação através da física, deixando automática (Engine)
+        //transform.rotation = Input.gyro.attitude;
+
+        //rigidBody.freezeRotation = false; // Ativando rotação através da física, deixando automática (Engine)
     }
 
     private void ToggleDebugKeys()
