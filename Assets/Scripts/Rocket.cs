@@ -169,8 +169,6 @@ public class Rocket : MonoBehaviour {
             transform.Rotate(-Vector3.forward * rotationByFrame); // Rotação no sentido horário (Atentar ao uso do sinal negativo).
         */
 
-        //transform.rotation = Input.gyro.attitude;        
-
         float tiltValue = GetTiltValue();
         Vector3 oldAngles = this.transform.eulerAngles;
         this.transform.eulerAngles = new Vector3(oldAngles.x, oldAngles.y, oldAngles.z + (tiltValue * rotateAmount));
