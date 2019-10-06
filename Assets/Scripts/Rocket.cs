@@ -117,8 +117,9 @@ public class Rocket : MonoBehaviour {
     private void ThrustWhenInput()
     {
         if (Input.GetKey(KeyCode.Space)) // Ao pressionar espaço
+        {
             ApplyThrust();
-        
+        }
         else
         {
             if (myAudio.isPlaying) // Se áudio está tocando, interromper trilha

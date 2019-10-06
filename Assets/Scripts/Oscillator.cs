@@ -21,7 +21,7 @@ public class Oscillator : MonoBehaviour {
 	void Update () {
 
         if (period <= Mathf.Epsilon)
-            return; // Disallowing period being 0. Itsn't right to compare floats with ==, that's why we use mathf.epsilon (smallest float)
+            return; // Disallowing period being 0. It isn't right to compare floats with ==, that's why we use mathf.epsilon (smallest float)
 
         float cycles = Time.time / period;
 
