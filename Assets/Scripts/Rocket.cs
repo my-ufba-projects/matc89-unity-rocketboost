@@ -127,19 +127,6 @@ public class Rocket : MonoBehaviour {
                 mainEngineParticle.Stop();
             }
         }
-        /*foreach(Touch touch in Input.touches)
-        {
-            if(touch.phase == TouchPhase.Stationary)
-            {
-                ApplyThrust();
-            }
-            else if(touch.phase == TouchPhase.Ended)
-            {
-                if (myAudio.isPlaying) // Se áudio está tocando, interromper trilha
-                    myAudio.Stop();
-                mainEngineParticle.Stop();
-            }
-        }*/
     }
 
     private void ApplyThrust()
