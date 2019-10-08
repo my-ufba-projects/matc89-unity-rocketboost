@@ -40,16 +40,10 @@ public class Rocket : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        
         if (state == State.Alive)
         {
             ThrustWhenInput();
             RotateWhenInput();
-        }
-
-        if(Debug.isDebugBuild)
-        {
-            ToggleDebugKeys();
         }
     }
 
@@ -119,8 +113,9 @@ public class Rocket : MonoBehaviour {
 
     private void ThrustWhenInput()
     {
-        foreach(Touch touch in Input.touches)
+        if (Input.touchCount > 0)
         {
+            Touch touch = Input.GetTouch(0);
             if(touch.phase == TouchPhase.Stationary)
             {
                 ApplyThrust();
@@ -132,6 +127,19 @@ public class Rocket : MonoBehaviour {
                 mainEngineParticle.Stop();
             }
         }
+        /*foreach(Touch touch in Input.touches)
+        {
+            if(touch.phase == TouchPhase.Stationary)
+            {
+                ApplyThrust();
+            }
+            else if(touch.phase == TouchPhase.Ended)
+            {
+                if (myAudio.isPlaying) // Se áudio está tocando, interromper trilha
+                    myAudio.Stop();
+                mainEngineParticle.Stop();
+            }
+        }*/
     }
 
     private void ApplyThrust()
